@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}PathForge - AI Learning Journey{% endblock %}</title>
+	<meta name="description" content="AI-personalized learning paths to level up your tech career.">
+	<meta name="keywords" content="learning path, AI, programming, frontend, backend, full stack">
+	<meta property="og:title" content="PathForge - AI Learning Journey">
+	<meta property="og:description" content="Get a personalized curriculum for your target career.">
+	<meta property="og:type" content="website">
+	<link rel="icon" href="/favicon.ico">
+	
+	<!-- Styles -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+	
+	<!-- Lucide Icons -->
+	<script src="https://unpkg.com/lucide@latest"></script>
+	
+	{% block extra_css %}{% endblock %}
+</head>
+<body>
+	<!-- Loading Overlay -->
+	<div id="loadingOverlay" class="loading-overlay hidden">
+		<div class="loader"></div>
+		<p>Loading...</p>
+	</div>
+
+	<!-- Confirm Modal -->
+	<div id="confirmModal" class="modal" aria-hidden="true">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 id="confirmTitle">Confirm</h3>
+				<button class="modal-close" onclick="hideConfirm()">✕</button>
+			</div>
+			<p id="confirmMessage">Are you sure?</p>
+			<div class="modal-actions">
+				<button class="btn btn-secondary" onclick="hideConfirm()">Cancel</button>
+				<button id="confirmOk" class="btn btn-primary">OK</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Theme Toggle -->
+	<button id="themeToggle" class="btn btn-secondary theme-toggle">Theme</button>
+	
+	<!-- Toast Notifications -->
+	<div id="toastContainer" class="toast-container"></div>
+	
+	{% block content %}{% endblock %}
+	
+	<!-- Base JavaScript -->
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+	
+	{% block extra_js %}{% endblock %}
+	
+	<script>
+		// Initialize Lucide icons
+		lucide.createIcons();
+
+		// Theme toggle (light/dark)
+		document.getElementById('themeToggle').addEventListener('click', function(){
+			const html = document.documentElement;
+			const light = html.getAttribute('data-theme') === 'light';
+			html.setAttribute('data-theme', light ? 'dark' : 'light');
+		});
+	</script>
+</body>
+</html>

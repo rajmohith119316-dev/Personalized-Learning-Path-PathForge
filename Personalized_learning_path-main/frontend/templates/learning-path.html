@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="register-page">
+	<div class="register-container">
+		<div class="register-header">
+			<a href="/" class="back-link">
+				<i data-lucide="arrow-left"></i>
+				Back to Home
+			</a>
+			<h1>Your Learning Path</h1>
+			<p>AI-generated curriculum tailored for you</p>
+		</div>
+		<div id="pathContainer"></div>
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+if(!window.auth.requireAuth('/login')){ /* redirected */ }
+</script>
+<script src="{{ url_for('static', filename='js/learning-path.js') }}"></script>
+{% endblock %}

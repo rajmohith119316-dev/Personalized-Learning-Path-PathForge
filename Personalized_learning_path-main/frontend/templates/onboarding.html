@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="onboarding-page">
+    <div class="onboarding-progress">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width:40%"></div>
+        </div>
+        <div class="progress-text">Step <span id="currentStep">2</span> / 5</div>
+    </div>
+	<div class="onboarding-step active" id="stepCareer">
+        <div class="step-content">
+            <h1>Select your career path</h1>
+            <p>Pick one option to continue</p>
+			<div class="career-paths">
+				<div class="career-card" data-role="Full Stack Developer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="layers"></i></div><h3>Full Stack Developer</h3><p>Build end-to-end web applications</p></div>
+				<div class="career-card" data-role="Frontend Developer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="layout"></i></div><h3>Frontend Developer</h3><p>Create modern UI and web experiences</p></div>
+				<div class="career-card" data-role="Backend Developer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="server"></i></div><h3>Backend Developer</h3><p>APIs, services, and business logic</p></div>
+				<div class="career-card" data-role="Mobile App Developer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="smartphone"></i></div><h3>Mobile App Developer</h3><p>Build iOS and Android apps</p></div>
+				<div class="career-card" data-role="Data Scientist" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="bar-chart"></i></div><h3>Data Scientist</h3><p>Insights from data and statistics</p></div>
+				<div class="career-card" data-role="Machine Learning Engineer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="brain"></i></div><h3>Machine Learning Engineer</h3><p>Train and deploy ML systems</p></div>
+				<div class="career-card" data-role="AI Engineer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="bot"></i></div><h3>AI Engineer</h3><p>Build AI-powered products</p></div>
+				<div class="career-card" data-role="DevOps Engineer" onclick="selectCareer(this)"><div class="career-icon"><i data-lucide="git-branch"></i></div><h3>DevOps Engineer</h3><p>CI/CD, automation, reliability</p></div>
+			</div>
+		</div>
+        <div class="step-actions">
+			<button id="continueToSkillsBtn" class="btn btn-primary" onclick="goToSkills()" disabled>
+				Continue
+				<i data-lucide="arrow-right"></i>
+			</button>
+			<button id="skipAllBtn" class="btn btn-secondary" onclick="generatePath()" disabled>
+				Skip & Generate
+			</button>
+		</div>
+	</div>
+
+	<div class="onboarding-step" id="stepSkills" style="display:none">
+        <div class="step-content">
+            <h1>What do you already know?</h1>
+            <p>Add skills you're already familiar with to personalize your learning path</p>
+            <div class="form-group">
+                <label for="skillsInput">Your skills</label>
+                <input id="skillsInput" type="text" placeholder="Type a skill and press Enter (e.g., JavaScript, HTML, Git)" onkeydown="handleSkillInput(event)">
+                <span class="form-hint">Press Enter or comma to add. No duplicates. Max 20 skills.</span>
+            </div>
+            <div id="skillsChips" class="chips-container"></div>
+            <div class="form-hint" id="skillsCountHint"></div>
+            <div class="selected-skills">
+                <h4>Suggested skills</h4>
+                <div id="suggestedSkills" class="skills-grid"></div>
+            </div>
+            <div class="faculty-section">
+                <div class="faculty-header">
+                    <div>
+                        <h4>Faculty guiding your skill enhancement</h4>
+                        <p>Meet the mentors who review your strengths and recommend the right curriculum upgrades.</p>
+                    </div>
+                    <span class="faculty-badge">24/7 Support</span>
+                </div>
+                <article class="faculty-card">
+                    <div class="faculty-info">
+                        <h5>Prof Pothi Reddy K </h5>
+                        <p class="faculty-role">AI & ML specialist </p>
+                        <p class="faculty-focus">Focus: Algorithmis, Machine Learning, and AI.</p>
+                    </div>
+                    <div class="faculty-meta">
+                        <span>10+ yrs exp.</span>
+                        <span>Former Software Engineer</span>
+                    </div>
+                </article>
+                    <article class="faculty-card">
+                        <div class="faculty-info">
+                            <h5>Prof. Pushpa</h5>
+                            <p class="faculty-role">Data Structures and Database Specialist</p>
+                            <p class="faculty-focus">Focus: Database Manipulation , tooling, research-backed learning.</p>
+                        </div>
+                        <div class="faculty-meta">
+                            <span>10+ yrs exp.</span>
+                            <span>Emerging Database Specialist</span>
+                        </div>
+                    </article>
+                    <article class="faculty-card">
+                        <div class="faculty-info">
+                            <h5>Prof Gopal Krishna </h5>
+                            <p class="faculty-role">Frontend and Web Design Specialist</p>
+                            <p class="faculty-focus">Focus: UX audits, accessibility coaching, rapid UI prototyping.</p>
+                        </div>
+                        <div class="faculty-meta">
+                            <span>10+ yrs exp.</span>
+                            <span>Former Web Designer Admin</span>
+                        </div>
+                    </article>
+                    <article class="faculty-card">
+                        <div class="faculty-info">
+                            <h5>Prof Bandhavya </h5>
+                            <p class="faculty-role">Lead Full Stack Architect</p>
+                            <p class="faculty-focus">Focus: System design, modern JS frameworks, API best practices.</p>
+                        </div>
+                        <div class="faculty-meta">
+                            <span>10+ yrs exp.</span>
+                            <span>Former Full stack developer Admin</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+		</div>
+        <div class="step-actions">
+			<button class="btn btn-secondary" onclick="backToCareer()">
+				<i data-lucide="arrow-left"></i>
+				Back
+			</button>
+			<div>
+				<button class="btn btn-secondary" onclick="skipSkills()">Skip</button>
+                <button id="skillsContinueBtn" class="btn btn-primary" onclick="goToPrefs()" disabled>
+                    Continue
+                    <i data-lucide="arrow-right"></i>
+                </button>
+			</div>
+		</div>
+
+    <div class="onboarding-step" id="stepPrefs" style="display:none">
+        <div class="step-content">
+            <h1>Customize preferences</h1>
+            <p>Optional settings to tailor your learning experience</p>
+            <div class="preferences-form">
+                <div class="preference-group">
+                    <h3>Experience level</h3>
+                    <div class="radio-cards">
+                        <label class="radio-card"><input type="radio" name="exp" value="beginner" checked><div class="radio-card-content"><h4>Beginner</h4></div></label>
+                        <label class="radio-card"><input type="radio" name="exp" value="intermediate"><div class="radio-card-content"><h4>Intermediate</h4></div></label>
+                        <label class="radio-card"><input type="radio" name="exp" value="advanced"><div class="radio-card-content"><h4>Advanced</h4></div></label>
+                    </div>
+                </div>
+                <div class="preference-group">
+                    <h3>Learning pace</h3>
+                    <div class="radio-cards">
+                        <label class="radio-card"><input type="radio" name="pace" value="casual"><div class="radio-card-content"><h4>Casual</h4><p>~1 hr/day</p></div></label>
+                        <label class="radio-card"><input type="radio" name="pace" value="moderate" checked><div class="radio-card-content"><h4>Moderate</h4><p>~2 hrs/day</p></div></label>
+                        <label class="radio-card"><input type="radio" name="pace" value="intensive"><div class="radio-card-content"><h4>Intensive</h4><p>3+ hrs/day</p></div></label>
+                    </div>
+                </div>
+                <div class="preference-group">
+                    <h3>Time commitment</h3>
+                    <div class="radio-cards" id="timeCommitmentCards">
+                        <label class="radio-card">
+                            <input type="radio" name="time" value="1">
+                            <div class="radio-card-content"><h4>1 hr/day</h4></div>
+                        </label>
+                
+                        <label class="radio-card">
+                            <input type="radio" name="time" value="2" checked>
+                            <div class="radio-card-content"><h4>2 hrs/day</h4></div>
+                        </label>
+                
+                        <label class="radio-card">
+                            <input type="radio" name="time" value="3">
+                            <div class="radio-card-content"><h4>3 hrs/day</h4></div>
+                        </label>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="step-actions">
+            <button class="btn btn-secondary" onclick="backToSkills()"><i data-lucide="arrow-left"></i>Back</button>
+            <button id="generateBtn" class="btn btn-primary" onclick="generatePath()"><i data-lucide="sparkles"></i>Generate My Path</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+if(!window.auth.requireAuth('/login')){ /* redirected */ }
+</script>
+<script src="{{ url_for('static', filename='js/onboarding.js') }}"></script>
+{% endblock %}

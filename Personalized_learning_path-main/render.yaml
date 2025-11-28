@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pathforge
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn -w 2 -b 0.0.0.0:10000 backend.app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.6
+    healthCheckPath: /
+

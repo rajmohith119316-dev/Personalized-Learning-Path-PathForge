@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-container glass-card">
+        <div class="login-header">
+            <div class="logo-large">
+                <i data-lucide="lock"></i>
+                <h1 id="authTitle">Sign In</h1>
+            </div>
+            <p class="subtitle">Access your personalized learning journey</p>
+            <div class="tagline">Level up your career with tailored paths</div>
+        </div>
+
+        <div class="auth-toggle">
+            <button id="tabSignIn" class="btn btn-secondary" onclick="switchAuth('in')">Sign In</button>
+            <button id="tabSignUp" class="btn btn-secondary" onclick="switchAuth('up')">Sign Up</button>
+        </div>
+
+        <form id="formSignIn" class="login-form" onsubmit="handleSignIn(event)">
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" placeholder="you@example.com" oninput="validateLoginEmail()">
+                <small id="loginEmailErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+                <small id="loginPasswordErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:var(--spacing-sm)">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">Remember Me</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Sign In</button>
+        </form>
+
+        <form id="formSignUp" class="login-form" onsubmit="handleSignUp(event)" style="display:none">
+            <div class="form-group">
+                <label for="upName">Full Name</label>
+                <input type="text" id="upName" placeholder="Jane Doe" oninput="validateName()">
+                <small id="upNameErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <div class="form-group">
+                <label for="upEmail">Email</label>
+                <input type="email" id="upEmail" placeholder="you@example.com" oninput="validateUpEmail()">
+                <small id="upEmailErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <div class="form-group">
+                <label for="upPassword">Password</label>
+                <input type="password" id="upPassword" placeholder="At least 8 chars, 1 uppercase, 1 number" oninput="validateUpPassword()">
+                <small id="upPasswordErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <div class="form-group">
+                <label for="upConfirm">Confirm Password</label>
+                <input type="password" id="upConfirm" placeholder="Re-enter password" oninput="validateUpConfirm()">
+                <small id="upConfirmErr" class="form-hint" style="color:var(--error)"></small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-large">Create Account</button>
+        </form>
+
+        <div class="login-footer">
+            <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function switchAuth(which){
+        const inForm = document.getElementById('formSignIn');
+        const upForm = document.getElementById('formSignUp');
+        const title = document.getElementById('authTitle');
+        const tabIn = document.getElementById('tabSignIn');
+        const tabUp = document.getElementById('tabSignUp');
+        if(which==='up'){
+            inForm.style.display='none'; upForm.style.display='block';
+            title.textContent='Sign Up';
+            tabUp.classList.add('btn-primary'); tabIn.classList.remove('btn-primary');
+        } else {
+            upForm.style.display='none'; inForm.style.display='block';
+            title.textContent='Sign In';
+            tabIn.classList.add('btn-primary'); tabUp.classList.remove('btn-primary');
+        }
+    }
+
+    // Realtime validation helpers
+    function validateLoginEmail(){
+        const el = document.getElementById('loginEmail');
+        const err = document.getElementById('loginEmailErr');
+        err.textContent = window.auth.isValidEmail(el.value) || el.value==='' ? '' : 'Invalid email format';
+    }
+
+    function validateName(){
+        const el = document.getElementById('upName');
+        const err = document.getElementById('upNameErr');
+        err.textContent = (el.value.trim().length >= 2 || el.value==='') ? '' : 'Enter your full name';
+    }
+    function validateUpEmail(){
+        const el = document.getElementById('upEmail');
+        const err = document.getElementById('upEmailErr');
+        err.textContent = window.auth.isValidEmail(el.value) || el.value==='' ? '' : 'Invalid email format';
+    }
+    function validateUpPassword(){
+        const el = document.getElementById('upPassword');
+        const err = document.getElementById('upPasswordErr');
+        const v = el.value;
+        err.textContent = (v==='' || window.auth.isStrongPassword(v)) ? '' : 'Min 8 chars, 1 uppercase, 1 number';
+        validateUpConfirm();
+    }
+    function validateUpConfirm(){
+        const pw = document.getElementById('upPassword').value;
+        const el = document.getElementById('upConfirm');
+        const err = document.getElementById('upConfirmErr');
+        err.textContent = (el.value==='' || el.value===pw) ? '' : 'Passwords do not match';
+    }
+
+    async function handleSignUp(e){
+        e.preventDefault();
+        try{
+            showLoading();
+            const name = document.getElementById('upName').value.trim();
+            const email = document.getElementById('upEmail').value.trim();
+            const password = document.getElementById('upPassword').value;
+            const confirmPassword = document.getElementById('upConfirm').value;
+            await window.auth.signUp({ name, email, password, confirmPassword });
+            showToast('Account created. Please sign in.', 'success');
+            switchAuth('in');
+        } catch(err){
+            showToast(err.message || 'Sign up failed', 'error');
+        } finally { hideLoading(); }
+    }
+
+    async function handleSignIn(e){
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const remember = document.getElementById('rememberMe').checked;
+        try{
+            showLoading();
+            await window.auth.signIn({ email, password, remember });
+            showToast('Signed in successfully', 'success');
+            setTimeout(()=>{ window.location.href = '/onboarding'; }, 400);
+        }catch(err){
+            showToast(err.message || 'Login failed', 'error');
+        } finally { hideLoading(); }
+    }
+
+    function forgotPassword(){ showToast('Password reset coming soon', 'info'); }
+
+    // Default active tab
+    switchAuth('in');
+</script>
+{% endblock %}
+
+
