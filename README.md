@@ -1,5 +1,4 @@
 PathForge A modern, AI-assisted personalized learning path generator built with Flask (backend) and static HTML/CSS/JS (frontend).
-Here is a **section-wise, bullet-point version ~300 characters (including spaces):**
 
 **Features**
 
